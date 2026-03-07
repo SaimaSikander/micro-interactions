@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Romantic Cinematic Orbit</title>
+    <style>
+        body {
+            background: linear-gradient(135deg, #ffa19acc 0%, #f0eff5 50%, #ffa19a 100%);
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .scene {
+            width: 340px;
+            height: 250px;
+            perspective: 1500px;
+            position: relative;
+        }
+
+        .carousel {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            transform-style: preserve-3d;
+            will-change: transform; 
+            animation: spin 30s infinite linear;
+        }
+
+        .scene:hover .carousel {
+            animation-play-state: paused;
+        }
+
+        @keyframes spin {
+            from { transform: rotateY(0deg); }
+            to   { transform: rotateY(360deg); }
+        }
+
+        @keyframes romantic-glow {
+            0% {
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15), 
+                            0 0 20px rgba(255, 182, 193, 0.3), 
+                            inset 0 0 10px rgba(255, 255, 255, 0.5);
+                border-color: rgba(255, 182, 193, 0.6); 
+            }
+            50% {
+                box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2), 
+                            0 0 35px rgba(255, 192, 203, 0.5), 
+                            inset 0 0 15px rgba(255, 255, 255, 0.8);
+                border-color: rgba(255, 192, 203, 0.9);
+            }
+            100% {
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15), 
+                            0 0 20px rgba(255, 182, 193, 0.3), 
+                            inset 0 0 10px rgba(255, 255, 255, 0.5);
+                border-color: rgba(255, 182, 193, 0.6);
+            }
+        }
+
+        .card {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            left: 0;
+            top: 0;
+            
+            background: rgb(255, 81, 81);
+            backdrop-filter: blur(8px); 
+            -webkit-backdrop-filter: blur(8px);
+            
+            border-radius: 20px;
+            
+            border: 2px solid rgba(255, 182, 193, 0.6);
+
+            animation: romantic-glow 4s infinite ease-in-out;
+            
+            overflow: hidden; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* --- FIXED SECTION --- */
+        .card video, 
+        .card img {
+            width: 100%;
+            height: 100%;
+            
+            /* 1. Ensures the image content starts from the top */
+            object-fit: cover;
+            object-position: top; 
+            
+            transform: scale(1.1); 
+            
+            /* 2. Ensures the zoom effect expands downwards, keeping the top fixed */
+            transform-origin: top; 
+            
+            opacity: 0.95; 
+            pointer-events: none;
+            display: block;
+        }
+        /* --------------------- */
+
+        .card:nth-child(1) { transform: rotateY(0deg) translateZ(450px); }
+        .card:nth-child(2) { transform: rotateY(60deg) translateZ(450px); }
+        .card:nth-child(3) { transform: rotateY(120deg) translateZ(450px); }
+        .card:nth-child(4) { transform: rotateY(180deg) translateZ(450px); }
+        .card:nth-child(5) { transform: rotateY(240deg) translateZ(450px); }
+        .card:nth-child(6) { transform: rotateY(300deg) translateZ(450px); }
+
+    </style>
+</head>
+<body>
+
+    <div class="scene">
+        <div class="carousel">
+            <div class="card">
+                <video src="video-1.mp4" autoplay muted loop playsinline></video>
+            </div>
+            <div class="card">
+                <img src="1 (3).png" alt="Photo">
+            </div>
+            <div class="card">
+                <video src="VIDEO-3.mp4" autoplay muted loop playsinline></video>
+            </div>
+            <div class="card">
+                <img src="1 (4).png" alt="Photo">
+            </div>
+            <div class="card">
+                <video src="VIDEO-2.mp4" autoplay muted loop playsinline></video>
+            </div>
+            <div class="card">
+                <img src="1 (6).png" alt="Photo">
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

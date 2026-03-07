@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cinematic Scroll Expand - Alpine Drift</title>
+  <style>
+    /* --- CSS Reset & Base --- */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Lenis Smooth Scrolling CSS */
+    html.lenis {
+      height: auto;
+    }
+    .lenis-smooth {
+      scroll-behavior: auto !important;
+    }
+    .lenis-smooth [data-lenis-prevent] {
+      overscroll-behavior: contain;
+    }
+    .lenis-stopped {
+      overflow: hidden;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: #03060a; 
+      color: #fff;
+      overflow-x: hidden;
+      line-height: 1.5;
+    }
+
+    /* --- Sections --- */
+    .scroll-expand-section {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .bg-layer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at center, #1a2536 0%, #03060a 100%);
+      z-index: 0;
+      will-change: opacity;
+    }
+
+    .pinned-content {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* --- Media Container (Updated to be larger initially) --- */
+    .media-container {
+      position: relative;
+      width: 80vw;  /* Increased from 60vw */
+      height: 60vh; /* Increased from 40vh */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      z-index: 5;
+      will-change: transform, border-radius, width, height;
+      box-shadow: 0 40px 100px rgba(0,0,0,0.8);
+    }
+
+    .media-inner {
+      width: 100%;
+      height: 100%;
+      position: relative;
+    }
+
+    .media-container video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center center; 
+    }
+
+    .media-overlay {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle, rgba(0,0,0,0) 30%, rgba(0,0,0,0.7) 100%);
+      z-index: 1;
+      will-change: opacity;
+    }
+
+    /* --- Typography --- */
+    .text-layer {
+      position: absolute;
+      z-index: 20;
+      display: flex;
+      gap: 4rem; /* Wider gap for the larger video window */
+      mix-blend-mode: difference;
+      pointer-events: none;
+      text-align: center;
+    }
+
+    .text-contrast {
+      color: #ffffff;
+      font-size: clamp(3rem, 10vw, 8rem);
+      font-weight: 900;
+      font-style: italic;
+      letter-spacing: -0.04em;
+      text-transform: uppercase;
+      line-height: 1;
+      will-change: transform, opacity;
+    }
+
+    /* --- Content Below --- */
+    .bottom-content {
+      min-height: 100vh;
+      padding: 10vh 5%;
+      background-color: #03060a;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .content-inner {
+      text-align: center;
+      max-width: 800px;
+    }
+
+    .content-inner h2 {
+      font-size: clamp(2rem, 5vw, 4rem);
+      margin-bottom: 1.5rem;
+      font-weight: 800;
+      font-style: italic;
+      background: linear-gradient(135deg, #ffffff 0%, #7a8b9e 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    
+
+    .spacer { height: 30uuuuuuvh; }
+  </style>
+</head>
+<body>
+
+  <section class="scroll-expand-section">
+    <div class="bg-layer"></div>
+
+    <div class="pinned-content">
+      <div class="media-container">
+        <div class="media-inner">
+          <video src="drift.mp4" autoplay loop muted playsinline></video>
+          <div class="media-overlay"></div>
+        </div>
+      </div>
+
+      <div class="text-layer">
+        <h2 class="title-left text-contrast">ALPINE</h2>
+        <h2 class="title-right text-contrast">DRIFT</h2>
+      </div>
+    </div>
+  </section>
+
+  <section class="bottom-content">
+    <div class="content-inner">
+      <h2>Precision & Control.</h2>
+    </div>
+    <div class="spacer"></div>
+  </section>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://unpkg.com/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+  
+  <script>
+    // 1. Initialize Lenis (Smooth Scroll)
+    const lenis = new Lenis();
+    lenis.on('scroll', ScrollTrigger.update);
+    gsap.ticker.add((time) => { lenis.raf(time * 1000); });
+    gsap.ticker.lagSmoothing(0);
+
+    // 2. Register GSAP Plugins
+    gsap.registerPlugin(ScrollTrigger);
+
+    // 3. Initial States (Increased scale for a larger starting window)
+    gsap.set(".media-container", { 
+      scale: 0.8,            // Increased from 0.3 for a more substantial look
+      borderRadius: "30px",  // Slightly sharper corners for the larger box
+      transformOrigin: "center center" 
+    });
+
+    // 4. Expansion Timeline
+    const mainTl = gsap.timeline({
+      scrollTrigger: {
+        trigger: ".scroll-expand-section",
+        start: "top top",
+        end: "+=2500", 
+        pin: true,
+        scrub: 1.2,
+        anticipatePin: 1
+      }
+    });
+
+    mainTl
+      // Fade background out
+      .to(".bg-layer", { opacity: 0, ease: "none" }, 0)
+      
+      // Expand video window to full screen
+      .to(".media-container", {
+        scale: 1,
+        width: "100vw",
+        height: "100vh",
+        borderRadius: "0px",
+        ease: "power2.inOut" 
+      }, 0)
+
+      // Soften the vignette
+      .to(".media-overlay", { 
+        opacity: 0.3, 
+        ease: "power1.inOut" 
+      }, 0.2)
+
+      // Move text outwards as the window expands
+      .to(".title-left", { 
+        xPercent: -150, 
+        skewX: -15,
+        opacity: 0, 
+        ease: "power2.in" 
+      }, 0)
+      .to(".title-right", { 
+        xPercent: 150, 
+        skewX: 15,
+        opacity: 0, 
+        ease: "power2.in" 
+      }, 0)
+
+      // Subtle zoom into the footage itself
+      .to(".media-container video", {
+        scale: 1.1,
+        ease: "none"
+      }, 0);
+
+    // 5. Reveal Content Below
+    gsap.from(".content-inner", {
+      y: 80,
+      opacity: 0,
+      duration: 1.2,
+      ease: "power3.out",
+      scrollTrigger: {
+        trigger: ".bottom-content",
+        start: "top 85%",
+        end: "top 50%",
+        scrub: 1
+      }
+    });
+  </script>
+</body>
+</html>

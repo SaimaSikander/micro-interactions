@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Chocolate Day</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Montserrat:wght@300;500&display=swap" rel="stylesheet">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        :root {
+            --bg-gradient: radial-gradient(circle at center, #fffbfb 0%, #ffeef2 100%);
+            --ribbon-pink: #ffb7c5;
+            --ribbon-dark: #e68a9c;
+            --gold: #d4af37;
+            --choco-dark: #3e2723;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: var(--bg-gradient);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        /* --- BACKGROUND FLOATING ELEMENTS --- */
+        .floating-container {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .float-item {
+            position: absolute;
+            bottom: -50px;
+            opacity: 0.8;
+            user-select: none;
+            animation: floatUp linear infinite;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.8; }
+            90% { opacity: 0.8; }
+            100% { transform: translateY(-110vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* Original Petals */
+        .petal {
+            position: absolute;
+            background: rgba(255, 183, 197, 0.4);
+            border-radius: 150% 0 150% 0;
+            animation: fall 10s infinite linear;
+            z-index: 0;
+        }
+
+        @keyframes fall {
+            0% { transform: translate(0, -10vh) rotate(0deg); opacity: 0; }
+            20% { opacity: 0.8; }
+            100% { transform: translate(10vw, 110vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* Scene Styling */
+        .scene {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            perspective: 1000px;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .gift-box {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+        }
+
+        .lid {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: #fff;
+            border: 1px solid #fff0f5;
+            box-shadow: 0 20px 40px rgba(230, 138, 156, 0.2);
+            border-radius: 20px;
+            z-index: 5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transform-origin: top;
+            background-image: radial-gradient(#ffeef2 10%, transparent 10%);
+            background-size: 20px 20px;
+        }
+
+        .ribbon-v, .ribbon-h { position: absolute; background: var(--ribbon-pink); box-shadow: 0 0 5px rgba(0,0,0,0.1); }
+        .ribbon-v { width: 40px; height: 100%; }
+        .ribbon-h { width: 100%; height: 40px; }
+
+        .bow {
+            position: absolute;
+            width: 80px; height: 80px;
+            background: radial-gradient(circle, #fff, var(--ribbon-dark));
+            border-radius: 50%;
+            border: 4px solid #fff;
+            box-shadow: 0 5px 15px rgba(230, 138, 156, 0.5);
+            z-index: 6;
+        }
+
+        .tag {
+            position: absolute;
+            bottom: 20px; right: 20px;
+            background: #fff;
+            padding: 8px 15px;
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            font-size: 0.8rem;
+            transform: rotate(-10deg);
+            z-index: 7;
+        }
+
+        .tray {
+            position: absolute;
+            top: 10px; left: 10px;
+            width: calc(100% - 20px);
+            height: calc(100% - 20px);
+            background: #2b1d0e;
+            border-radius: 15px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            gap: 15px;
+            padding: 25px;
+            box-shadow: inset 0 0 20px #000;
+        }
+
+        /* --- REFINED REALISTIC CHOCOLATES --- */
+        .choco { 
+            width: 100%; 
+            height: 100%; 
+            transform: scale(0); 
+            position: relative;
+        }
+
+        /* 1. Dark Chocolate Round Truffle with Glossy Highlight */
+        .choco-1 { 
+            border-radius: 50%; 
+            background: radial-gradient(circle at 35% 25%, #795548, #3e2723 50%, #1e110a); 
+            box-shadow: inset -5px -5px 10px rgba(0,0,0,0.6), 4px 6px 8px rgba(0,0,0,0.5);
+        }
+        .choco-1::after {
+            content: ''; position: absolute; top: 12%; left: 18%; width: 25%; height: 25%;
+            background: radial-gradient(circle, rgba(255,255,255,0.25), transparent 70%);
+            border-radius: 50%;
+        }
+
+        /* 2. White Chocolate Square Praline with Thick Dark Drizzle */
+        .choco-2 { 
+            border-radius: 12px; 
+            background: linear-gradient(135deg, #fffbf0, #e6ceb5); 
+            box-shadow: inset -4px -4px 10px rgba(180, 150, 120, 0.5), 4px 6px 8px rgba(0,0,0,0.5);
+            overflow: hidden; 
+        }
+        .drizzle { 
+            position: absolute; width: 150%; height: 4px; 
+            background: #3e2723; top: 15%; left: -20%; transform: rotate(35deg); 
+            box-shadow: 0 12px 0 #3e2723, 0 24px 0 #3e2723, 0 36px 0 #3e2723, 0 48px 0 #3e2723; 
+            border-radius: 2px;
+        }
+
+        /* 3. Milk Chocolate Swirl / Peanut Butter Cup Style */
+        .choco-3 { 
+            border-radius: 50%; 
+            background: conic-gradient(from 0deg, #5d361c, #8d5524, #5d361c, #8d5524, #5d361c);
+            box-shadow: inset 0 0 12px rgba(0,0,0,0.8), 4px 6px 8px rgba(0,0,0,0.5);
+        }
+        .choco-3::after {
+            content: ''; position: absolute; top: 15%; left: 15%; width: 70%; height: 70%;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #a16844, #5d361c);
+            box-shadow: 2px 3px 6px rgba(0,0,0,0.6);
+        }
+
+        /* 4. Ruby Chocolate Artisanal Dome with White Accent */
+        .choco-4 { 
+            border-radius: 40% 60% 65% 35% / 40% 45% 55% 60%; 
+            background: radial-gradient(circle at 30% 30%, #ff8a80, #c2185b);
+            box-shadow: inset -4px -4px 8px rgba(136, 14, 79, 0.7), 4px 6px 8px rgba(0,0,0,0.5);
+        }
+        .choco-4::after {
+            content: ''; position: absolute; top: 25%; right: 25%; width: 15%; height: 15%;
+            background: #fffbf0; border-radius: 50%; box-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+        }
+
+        .message-container {
+            position: absolute;
+            top: -80px; left: 0; width: 100%;
+            text-align: center; opacity: 0;
+        }
+        .message-container h1 { font-family: 'Alex Brush', cursive; color: #d8818e; font-size: 2.5rem; }
+        .message-container p { font-size: 0.9rem; color: #5d4037; background: rgba(255,255,255,0.8); padding: 5px 10px; border-radius: 10px; display: inline-block; }
+
+        .cta { position: absolute; bottom: -50px; width: 100%; text-align: center; color: var(--ribbon-dark); letter-spacing: 2px; font-size: 0.8rem; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 50% { opacity: 0.5; } }
+    </style>
+</head>
+<body>
+
+    <div id="petals"></div>
+    <div class="floating-container" id="floatContainer"></div>
+
+    <div class="scene" id="scene">
+        <div class="message-container" id="msg">
+            <h1>Sweetest Day</h1>
+            <p>You are sweeter than all of these combined.</p>
+        </div>
+
+        <div class="gift-box">
+            <div class="lid" id="lid">
+                <div class="ribbon-v" id="ribbonV"></div>
+                <div class="ribbon-h" id="ribbonH"></div>
+                <div class="bow" id="bow"></div>
+                <div class="tag" id="tag">For You</div>
+            </div>
+
+            <div class="tray">
+                <div class="choco choco-1"></div>
+                <div class="choco choco-2"><div class="drizzle"></div></div>
+                <div class="choco choco-3"></div>
+                <div class="choco choco-4"></div>
+            </div>
+        </div>
+
+        <div class="cta" id="cta">Tap to Open</div>
+    </div>
+
+    <script>
+        // 1. Initial Petals
+        const petalContainer = document.getElementById('petals');
+        for(let i=0; i<15; i++) {
+            let p = document.createElement('div');
+            p.classList.add('petal');
+            let w = Math.random() * 15 + 10;
+            p.style.width = w + 'px'; p.style.height = w + 'px';
+            p.style.left = Math.random() * 100 + 'vw';
+            p.style.animationDuration = (Math.random() * 5 + 5) + 's';
+            p.style.animationDelay = Math.random() * 5 + 's';
+            petalContainer.appendChild(p);
+        }
+
+        // 2. Floating Loop Logic
+        const floatContainer = document.getElementById('floatContainer');
+        const items = ['🍫', '🍬', '❤️', '🎈', '🍩', '✨'];
+
+        function createFloatingItem() {
+            const item = document.createElement('div');
+            item.classList.add('float-item');
+            item.innerText = items[Math.floor(Math.random() * items.length)];
+            
+            item.style.left = Math.random() * 100 + 'vw';
+            item.style.fontSize = (Math.random() * 20 + 20) + 'px';
+            
+            const duration = Math.random() * 3 + 4;
+            item.style.animationDuration = duration + 's';
+            
+            floatContainer.appendChild(item);
+            
+            // Remove from DOM after animation ends to keep it clean
+            setTimeout(() => item.remove(), duration * 1000);
+        }
+
+        function startFloatingLoop() {
+            setInterval(createFloatingItem, 300); // Spawns a new item every 300ms
+        }
+
+        // 3. Interaction
+        const scene = document.getElementById('scene');
+        let opened = false;
+
+        scene.addEventListener('click', () => {
+            if(opened) return;
+            opened = true;
+
+            const tl = gsap.timeline();
+            gsap.to('#cta', {opacity: 0});
+
+            tl.to(['#bow', '#tag'], { scale: 0, opacity: 0, duration: 0.4, ease: "back.in" })
+              .to(['#ribbonV', '#ribbonH'], { opacity: 0, duration: 0.3 })
+              .to('#lid', { y: -500, rotationX: 45, opacity: 0, duration: 1.2, ease: "power2.inOut" })
+              .to('.choco', {
+                  scale: 1,
+                  duration: 0.5,
+                  stagger: 0.1,
+                  ease: "elastic.out(1, 0.5)",
+                  onStart: () => {
+                      // Start the background loop as chocolates appear
+                      startFloatingLoop();
+                  }
+              })
+              .to('#msg', { opacity: 1, y: 20, duration: 0.8 }, "-=0.2");
+
+            setTimeout(fireSweetConfetti, 800);
+        });
+
+        function fireSweetConfetti() {
+            confetti({
+                particleCount: 150,
+                spread: 70,
+                origin: { y: 0.6 },
+                colors: ['#3e2723', '#ffb7c5', '#ffd700', '#ffffff']
+            });
+        }
+    </script>
+</body>
+</html>

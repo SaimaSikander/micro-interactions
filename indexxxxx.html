@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cinematic Scroll Experience</title>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://unpkg.com/@studio-freight/lenis@1.0.34/dist/lenis.min.js"></script>
+
+    <style>
+        :root { --accent: #ff4d6d; }
+        html.lenis { height: auto; }
+        .lenis.lenis-smooth { scroll-behavior: auto; }
+        
+        body {
+            margin: 0;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: #050505;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        .spacer {
+            height: 80vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #444;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+        }
+
+        /* SECTION CONFIG */
+        .story-section {
+            position: relative;
+            height: 100vh;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .visual-viewport {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1;
+        }
+
+        /* The Morphing Shape */
+        .shape {
+            width: 350px;
+            height: 350px;
+            border-radius: 40px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 0 100px rgba(255, 77, 109, 0.15);
+            background: #111;
+            will-change: transform, border-radius;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .shape img {
+            width: 120%; /* Slightly larger for parallax */
+            height: 120%;
+            object-fit: cover;
+            position: absolute;
+            top: -10%;
+            left: -10%;
+        }
+
+        /* Content Styling */
+        .content-layer {
+            position: relative;
+            z-index: 2;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .step {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 0 10%;
+            max-width: 700px;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .step-tag {
+            font-family: monospace;
+            color: var(--accent);
+            display: block;
+            margin-bottom: 1rem;
+            font-weight: bold;
+        }
+
+        h1 {
+            font-size: clamp(3.5rem, 8vw, 6rem);
+            margin-bottom: 1.5rem;
+            line-height: 0.9;
+            font-weight: 800;
+            letter-spacing: -2px;
+        }
+
+        p {
+            font-size: 1.2rem;
+            color: #888;
+            max-width: 400px;
+            line-height: 1.4;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="spacer">Scroll to explore</div>
+
+<section class="story-section">
+    <div class="visual-viewport">
+        <div class="shape">
+            <img src="3d-rendering-abstract-black-white-geometric-background.jpg" id="main-img">
+        </div>
+    </div>
+
+    <div class="content-layer">
+        <div class="step" id="step1">
+            <span class="step-tag">/ 01</span>
+            <h1>VISION</h1>
+            <p>We redefine the boundaries of digital aesthetics through pure geometry.</p>
+        </div>
+
+        <div class="step" id="step2">
+            <span class="step-tag">/ 02</span>
+            <h1>FLUID</h1>
+            <p>Motion is not just an effect; it's the heartbeat of the user journey.</p>
+        </div>
+
+        <div class="step" id="step3">
+            <span class="step-tag">/ 03</span>
+            <h1>CORE</h1>
+            <p>The final result is a seamless fusion of performance and high-end design.</p>
+        </div>
+    </div>
+</section>
+
+<!-- <div class="spacer">Fin.</div> -->
+
+<script>
+    // 1. Smooth Scroll (Lenis)
+    const lenis = new Lenis();
+    lenis.on('scroll', ScrollTrigger.update);
+    gsap.ticker.add((time) => lenis.raf(time * 1000));
+    gsap.ticker.lagSmoothing(0);
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    // 2. Timeline Logic
+    const mainTl = gsap.timeline({
+        scrollTrigger: {
+            trigger: ".story-section",
+            start: "top top",
+            end: "+=400%", // More scroll distance for smoother feel
+            scrub: 1,
+            pin: true,
+        }
+    });
+
+    // Helper for text animations
+    function animateText(id, dir = "in") {
+        const opacity = dir === "in" ? 1 : 0;
+        const y = dir === "in" ? 0 : -40;
+        return [
+            gsap.to(`${id} .step-tag`, { opacity, y, duration: 0.4 }),
+            gsap.to(`${id} h1`, { opacity, y, duration: 0.4 }, "<0.1"),
+            gsap.to(`${id} p`, { opacity, y, duration: 0.4 }, "<0.1")
+        ];
+    }
+
+    // --- PHASE 1: Vision ---
+    mainTl.add(animateText("#step1", "in"))
+    .to(".shape", { scale: 0.8, rotation: -5, ease: "sine.inOut" }, 0)
+    .to("#main-img", { scale: 1.2, rotation: 5, ease: "sine.inOut" }, 0);
+
+    // --- PHASE 2: Fluid ---
+    mainTl.add(animateText("#step1", "out"), "+=0.5")
+    .add(animateText("#step2", "in"), "-=0.2")
+    .to(".shape", { 
+        borderRadius: "50%", 
+        x: window.innerWidth > 768 ? "25vw" : 0, 
+        rotation: 180,
+        scale: 1,
+        ease: "power2.inOut" 
+    }, "<")
+    .to("#main-img", { rotation: -180, scale: 1 }, "<");
+
+    // --- PHASE 3: Core ---
+    mainTl.add(animateText("#step2", "out"), "+=0.5")
+    .add(animateText("#step3", "in"), "-=0.2")
+    .to(".shape", { 
+        x: 0, 
+        scale: 6, 
+        borderRadius: "20px",
+        filter: "blur(10px)",
+        opacity: 0.2,
+        ease: "power2.inOut" 
+    }, "<");
+
+</script>
+
+</body>
+</html>

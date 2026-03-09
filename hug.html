@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>For My Love</title>
+    <style>
+        /* Importing Premium Romantic Fonts */
+        @import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap');
+
+        :root {
+            /* Romantic Sunset Gradient */
+            --bg-gradient: linear-gradient(135deg, #FFF0F5 0%, #FFD1FF 50%, #FAD0C4 100%);
+            --heart-bg: rgba(255, 255, 255, 0.4);
+            --heart-border: rgba(255, 255, 255, 0.8);
+            --liquid-color: linear-gradient(to top, #c71585, #ff1493); 
+            --text-main: #8B4513; 
+            --text-accent: #D10056; 
+        }
+
+        body {
+            margin: 0;
+            height: 100vh;
+            background: var(--bg-gradient);
+            font-family: 'Playfair Display', serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            touch-action: none;
+            user-select: none;
+        }
+
+        /* Ambient Orbs */
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(40px);
+            z-index: 0;
+            opacity: 0.5;
+            animation: floatOrb 10s infinite alternate;
+        }
+        .orb-1 { top: 10%; left: 10%; width: 200px; height: 200px; background: #ff9a9e; }
+        .orb-2 { bottom: 10%; right: 10%; width: 250px; height: 250px; background: #a18cd1; }
+
+        @keyframes floatOrb {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-30px); }
+        }
+
+        /* Instructions */
+        .instruction {
+            position: absolute;
+            top: 15%;
+            text-align: center;
+            z-index: 10;
+            transition: opacity 0.5s;
+            width: 80%;
+        }
+
+        .instruction h2 {
+            font-family: 'Great Vibes', cursive;
+            font-size: 2.5rem;
+            color: var(--text-accent);
+            margin: 0;
+            text-shadow: 0 2px 5px rgba(255,255,255,0.5);
+            font-weight: 400;
+        }
+
+        .instruction p {
+            font-size: 1rem;
+            color: var(--text-main);
+            font-style: italic;
+            opacity: 0.8;
+            margin-top: 5px;
+        }
+
+        /* The Heart Container */
+        .heart-wrapper {
+            position: relative;
+            width: 240px;
+            height: 240px;
+            cursor: grab;
+            z-index: 5;
+            transition: transform 0.1s;
+            filter: drop-shadow(0 15px 25px rgba(209, 0, 86, 0.15));
+        }
+
+        .heart-wrapper:active {
+            transform: scale(0.95);
+            cursor: grabbing;
+        }
+
+        /* Heart Shape Mask */
+        .heart-shape {
+            width: 100%;
+            height: 100%;
+            clip-path: path("M120 216.5 C46.5 166.5 10 116.5 10 71.5 C10 34.5 37.5 10 73.5 10 C100.5 10 120 31.5 120 31.5 C120 31.5 139.5 10 166.5 10 C202.5 10 230 34.5 230 71.5 C230 116.5 193.5 166.5 120 216.5 Z");
+            background: var(--heart-bg);
+            backdrop-filter: blur(5px);
+            position: relative;
+            overflow: hidden;
+            border: 2px solid var(--heart-border); 
+        }
+
+        /* The Liquid Fill */
+        .liquid {
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 100%;
+            height: 0%; 
+            background: var(--liquid-color);
+            transition: height 0.1s linear;
+            z-index: 2;
+            opacity: 0.9;
+        }
+
+        /* The Waves */
+        .liquid::before, .liquid::after {
+            content: "";
+            position: absolute;
+            width: 200%;
+            height: 100%;
+            top: -50px;
+            left: 50%;
+            transform: translate(-50%, -75%);
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 40%;
+            animation: wave 5s infinite linear;
+        }
+        
+        .liquid::after {
+            background: rgba(255, 255, 255, 0.3);
+            top: -55px;
+            animation: wave 7s infinite linear reverse;
+        }
+
+        @keyframes wave {
+            0% { transform: translate(-50%, 0) rotate(0deg); }
+            100% { transform: translate(-50%, 0) rotate(360deg); }
+        }
+
+        /* Percentage Text */
+        .percentage {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 3rem;
+            font-weight: 400;
+            font-family: 'Great Vibes', cursive;
+            color: #fff;
+            z-index: 10;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        /* Particles */
+        .sparkle {
+            position: absolute;
+            pointer-events: none;
+            animation: flyUp 1.2s ease-out forwards;
+            font-size: 1.5rem;
+            z-index: 20;
+            opacity: 0;
+        }
+
+        @keyframes flyUp {
+            0% { transform: translate(0, 0) scale(0.5); opacity: 1; }
+            100% { transform: translate(var(--tx), -120px) scale(1.2); opacity: 0; }
+        }
+
+        /* Success Overlay */
+        .success-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 1s ease;
+            z-index: 100;
+            text-align: center;
+        }
+
+        .success-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* Initial Hidden State of Text */
+        .success-overlay h1 {
+            font-family: 'Great Vibes', cursive;
+            color: var(--text-accent);
+            font-size: 4rem;
+            margin: 0;
+            transform: translateY(20px);
+            opacity: 0;
+            transition: all 0.8s ease 0.5s;
+        }
+
+        .success-overlay p {
+            font-family: 'Playfair Display', serif;
+            color: var(--text-main);
+            margin-top: 10px;
+            font-size: 1.2rem;
+            transform: translateY(20px);
+            opacity: 0;
+            transition: all 0.8s ease 0.8s;
+            letter-spacing: 1px;
+        }
+
+        /* *** THIS IS THE FIX: Visible State of Text *** */
+        .success-overlay.active h1,
+        .success-overlay.active p {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .big-heart-icon {
+            font-size: 5rem;
+            margin-bottom: 20px;
+            animation: heartbeat 1.5s infinite;
+            filter: drop-shadow(0 5px 15px rgba(255, 20, 147, 0.4));
+        }
+
+        @keyframes heartbeat {
+            0% { transform: scale(1); }
+            15% { transform: scale(1.15); }
+            30% { transform: scale(1); }
+            45% { transform: scale(1.15); }
+            60% { transform: scale(1); }
+            100% { transform: scale(1); }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+
+    <div class="instruction" id="instruct">
+        <h2>Warm my Heart...</h2>
+        <p>Rub the crystal gently to fill it with love</p>
+    </div>
+
+    <div class="heart-wrapper" id="heart-area">
+        <div class="heart-shape">
+            <div class="liquid" id="fill"></div>
+        </div>
+        <div class="percentage" id="percent-text">0%</div>
+    </div>
+
+    <div class="success-overlay" id="final-screen">
+        <div class="big-heart-icon">💖</div>
+        <h1>Hug Sent!</h1>
+        <p>Happy Hug Day, My Love.</p>
+    </div>
+
+    <script>
+        const heart = document.getElementById('heart-area');
+        const fill = document.getElementById('fill');
+        const percentText = document.getElementById('percent-text');
+        const instruction = document.getElementById('instruct');
+        const finalScreen = document.getElementById('final-screen');
+
+        let progress = 0;
+        let isComplete = false;
+        let lastX = 0;
+        let lastY = 0;
+
+        // Function to handle the "Rubbing" logic
+        function handleInteraction(x, y) {
+            if (isComplete) return;
+
+            // Calculate movement distance
+            const deltaX = Math.abs(x - lastX);
+            const deltaY = Math.abs(y - lastY);
+            const speed = deltaX + deltaY;
+
+            // Only count if moving significantly (rubbing)
+            if (speed > 5) {
+                progress += 0.8; 
+                
+                // Clamp to 100
+                if (progress > 100) progress = 100;
+                
+                updateUI();
+                spawnSparkle(x, y);
+
+                // Vibration feedback (Android only)
+                if (navigator.vibrate && Math.random() > 0.5) {
+                    navigator.vibrate(5);
+                }
+            }
+
+            lastX = x;
+            lastY = y;
+
+            if (progress >= 100) {
+                complete();
+            }
+        }
+
+        function updateUI() {
+            fill.style.height = progress + "%";
+            
+            // Fade in percentage text as it fills
+            if (progress > 10) {
+                percentText.style.opacity = 1;
+                percentText.innerText = Math.floor(progress) + "%";
+            }
+            
+            // Fade out instructions
+            if (progress > 20) {
+                instruction.style.opacity = 0;
+            }
+        }
+
+        function spawnSparkle(x, y) {
+            if (Math.random() > 0.3) return;
+
+            const el = document.createElement('div');
+            // Romantic particles
+            el.innerHTML = ['❤', '✨', '🌹', '💕'][Math.floor(Math.random() * 4)];
+            el.className = 'sparkle';
+            el.style.left = x + 'px';
+            el.style.top = y + 'px';
+            
+            const tx = (Math.random() - 0.5) * 100 + 'px';
+            el.style.setProperty('--tx', tx);
+            
+            document.body.appendChild(el);
+            
+            setTimeout(() => el.remove(), 1200);
+        }
+
+        function complete() {
+            isComplete = true;
+            if (navigator.vibrate) navigator.vibrate([200, 100, 200, 100, 400]); 
+            
+            setTimeout(() => {
+                finalScreen.classList.add('active');
+                createConfetti();
+            }, 500);
+        }
+
+        // Mouse Events
+        heart.addEventListener('mousemove', (e) => {
+            if (e.buttons === 1) handleInteraction(e.clientX, e.clientY);
+        });
+
+        // Touch Events
+        heart.addEventListener('touchmove', (e) => {
+            e.preventDefault(); 
+            const touch = e.touches[0];
+            handleInteraction(touch.clientX, touch.clientY);
+        });
+
+        const setStart = (x, y) => { lastX = x; lastY = y; };
+        heart.addEventListener('mousedown', (e) => setStart(e.clientX, e.clientY));
+        heart.addEventListener('touchstart', (e) => setStart(e.touches[0].clientX, e.touches[0].clientY));
+
+        // Confetti for the end
+        function createConfetti() {
+            const colors = ['#ff1493', '#ff69b4', '#ffd700', '#ffffff'];
+            for(let i=0; i<60; i++) {
+                const conf = document.createElement('div');
+                conf.style.position = 'fixed';
+                conf.style.width = Math.random() * 10 + 5 + 'px';
+                conf.style.height = Math.random() * 5 + 5 + 'px';
+                conf.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                conf.style.left = Math.random() * 100 + 'vw';
+                conf.style.top = '-10px';
+                conf.style.zIndex = '200';
+                conf.style.transition = 'top 3s ease-in, transform 3s linear';
+                conf.style.opacity = '0.8';
+                document.body.appendChild(conf);
+
+                setTimeout(() => {
+                    conf.style.top = '110vh';
+                    conf.style.transform = `rotate(${Math.random() * 360}deg)`;
+                }, 100);
+            }
+        }
+    </script>
+</body>
+</html>

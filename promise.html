@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>For My Love 💖</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+
+    <style>
+
+        :root {
+
+            --primary: #ff4757;
+
+            --secondary: #ff6b81;
+
+            --bg: #ffeaa7;
+
+            --text: #2f3542;
+
+            --white: #ffffff;
+
+        }
+
+
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+
+
+        body {
+
+            background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+
+            height: 100vh;
+
+            width: 100vw;
+
+            display: flex;
+
+            flex-direction: column;
+
+            justify-content: center;
+
+            align-items: center;
+
+            font-family: 'Nunito', sans-serif;
+
+            overflow: hidden;
+
+            transition: background 0.5s;
+
+        }
+
+
+
+        /* --- Floating Background Decoration --- */
+
+        .blob {
+
+            position: absolute;
+
+            background: rgba(255, 71, 87, 0.08);
+
+            border-radius: 50%;
+
+            filter: blur(40px);
+
+            z-index: 0;
+
+            pointer-events: none;
+
+        }
+
+
+
+        /* --- Main UI Container --- */
+
+        .container {
+
+            z-index: 10;
+
+            display: flex;
+
+            flex-direction: column;
+
+            align-items: center;
+
+            justify-content: center;
+
+            width: 100%;
+
+            max-width: 400px;
+
+            padding: 20px;
+
+        }
+
+
+
+        /* --- The Message Box --- */
+
+        .message-card {
+
+            background: rgba(255, 255, 255, 0.95);
+
+            width: 100%;
+
+            padding: 20px;
+
+            border-radius: 20px;
+
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+
+            margin-bottom: 30px;
+
+            min-height: 100px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            position: relative;
+
+            transform: translateY(0);
+
+            transition: transform 0.3s;
+
+        }
+
+       
+
+        .message-card::after {
+
+            content: '';
+
+            position: absolute;
+
+            bottom: -10px;
+
+            left: 50%;
+
+            transform: translateX(-50%);
+
+            border-width: 10px 10px 0;
+
+            border-style: solid;
+
+            border-color: rgba(255,255,255,0.95) transparent;
+
+        }
+
+
+
+        .typewriter {
+
+            font-size: 1.1rem;
+
+            color: var(--text);
+
+            font-weight: 700;
+
+            line-height: 1.4;
+
+            text-align: center;
+
+            width: 100%;
+
+        }
+
+
+
+        /* --- The Interactive Heart --- */
+
+        .heart-wrapper {
+
+            position: relative;
+
+            cursor: pointer;
+
+            transition: transform 0.1s;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            margin-bottom: 30px;
+
+            -webkit-tap-highlight-color: transparent;
+
+        }
+
+
+
+        .heart-wrapper:active {
+
+            transform: scale(0.9);
+
+        }
+
+
+
+        .heart-svg {
+
+            width: 160px;
+
+            height: 160px;
+
+            filter: drop-shadow(0 10px 20px rgba(255, 71, 87, 0.3));
+
+            animation: heartbeat 2s infinite ease-in-out;
+
+            transition: filter 0.3s;
+
+        }
+
+
+
+        .face {
+
+            fill: white;
+
+            transition: all 0.2s ease;
+
+        }
+
+
+
+        /* --- Love Meter --- */
+
+        .meter-container {
+
+            width: 80%;
+
+            height: 12px;
+
+            background: #dfe6e9;
+
+            border-radius: 20px;
+
+            margin-bottom: 8px;
+
+            overflow: hidden;
+
+            position: relative;
+
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
+
+        }
+
+
+
+        .meter-fill {
+
+            height: 100%;
+
+            width: 0%;
+
+            background: linear-gradient(90deg, #ff9ff3, #ff4757);
+
+            border-radius: 20px;
+
+            transition: width 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+        }
+
+
+
+        .meter-label {
+
+            font-size: 0.75rem;
+
+            color: #b2bec3;
+
+            font-weight: 800;
+
+            text-transform: uppercase;
+
+            letter-spacing: 1.5px;
+
+        }
+
+
+
+        /* --- Floating Particles --- */
+
+        .particle {
+
+            position: absolute;
+
+            pointer-events: none;
+
+            animation: floatUp 1.5s ease-out forwards;
+
+            font-size: 1.5rem;
+
+            z-index: 5;
+
+            user-select: none;
+
+        }
+
+
+
+        /* --- Final Letter Modal --- */
+
+        .modal {
+
+            position: fixed;
+
+            top: 0; left: 0; width: 100%; height: 100%;
+
+            background: rgba(0,0,0,0.6);
+
+            backdrop-filter: blur(8px);
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            z-index: 100;
+
+            opacity: 0;
+
+            pointer-events: none;
+
+            transition: opacity 0.5s;
+
+            padding: 20px;
+
+        }
+
+
+
+        .modal.open {
+
+            opacity: 1;
+
+            pointer-events: all;
+
+        }
+
+
+
+        .letter {
+
+            background: #fff;
+
+            width: 100%;
+
+            max-width: 380px;
+
+            padding: 40px 30px;
+
+            border-radius: 25px;
+
+            text-align: center;
+
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+
+            transform: scale(0.8) translateY(20px);
+
+            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+        }
+
+
+
+        .modal.open .letter { transform: scale(1) translateY(0); }
+
+
+
+        .letter h2 { color: var(--primary); margin-bottom: 15px; font-size: 1.8rem; }
+
+        .letter p { color: #57606f; line-height: 1.6; margin-bottom: 25px; font-size: 1rem; }
+
+       
+
+        .close-btn {
+
+            background: linear-gradient(45deg, var(--secondary), var(--primary));
+
+            color: white;
+
+            border: none;
+
+            padding: 12px 30px;
+
+            border-radius: 50px;
+
+            cursor: pointer;
+
+            font-weight: bold;
+
+            font-size: 1rem;
+
+            box-shadow: 0 5px 15px rgba(255, 71, 87, 0.4);
+
+            transition: transform 0.2s;
+
+        }
+
+
+
+        .close-btn:active { transform: scale(0.95); }
+
+
+
+        /* --- Animations --- */
+
+        @keyframes heartbeat {
+
+            0%, 100% { transform: scale(1); }
+
+            50% { transform: scale(1.05); }
+
+        }
+
+
+
+        @keyframes floatUp {
+
+            0% { transform: translateY(0) scale(0.5); opacity: 1; }
+
+            100% { transform: translateY(-150px) scale(1.2) rotate(20deg); opacity: 0; }
+
+        }
+
+
+
+        @keyframes shake {
+
+            0% { transform: rotate(0deg); }
+
+            25% { transform: rotate(-8deg); }
+
+            50% { transform: rotate(0deg); }
+
+            75% { transform: rotate(8deg); }
+
+            100% { transform: rotate(0deg); }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+
+
+    <div class="blob" style="top: 10%; left: 10%; width: 300px; height: 300px;"></div>
+
+    <div class="blob" style="bottom: 10%; right: 10%; width: 250px; height: 250px; background: rgba(112, 161, 255, 0.08);"></div>
+
+
+
+    <div class="container">
+
+        <div class="message-card">
+
+            <div class="typewriter" id="text-area">Hi my love! Tap my heart! 👇</div>
+
+        </div>
+
+
+
+        <div class="heart-wrapper" id="heart-btn">
+
+            <svg class="heart-svg" viewBox="0 0 200 200">
+
+                <path fill="#ff4757" d="M100 35 C 75 10, 10 40, 10 90 C 10 140, 70 170, 100 195 C 130 170, 190 140, 190 90 C 190 40, 125 10, 100 35 Z"/>
+
+                <g id="face-group">
+
+                    <circle class="face" cx="70" cy="85" r="8"/>
+
+                    <circle class="face" cx="130" cy="85" r="8"/>
+
+                    <path class="face" d="M85 115 Q100 130 115 115" stroke="white" stroke-width="5" fill="none" stroke-linecap="round"/>
+
+                </g>
+
+            </svg>
+
+        </div>
+
+
+
+        <div class="meter-container">
+
+            <div class="meter-fill" id="meter"></div>
+
+        </div>
+
+        <div class="meter-label">Love Tank</div>
+
+    </div>
+
+
+
+    <div class="modal" id="final-modal">
+
+        <div class="letter">
+
+            <h2>You unlocked my heart! 🔒❤️</h2>
+
+            <p>
+
+                My promise to you isn't just for today, it's for forever.
+
+                <br><br>
+
+                I promise to be your biggest fan, your safe place, and your best friend. No matter where life takes us, I promise to hold your hand through it all.
+
+                <br><br>
+
+                You are my favorite person.
+
+            </p>
+
+            <button class="close-btn" onclick="location.reload()">Replay 💖</button>
+
+        </div>
+
+    </div>
+
+
+
+    <script>
+
+        const promises = [
+
+            "I promise to always make you laugh when you're stressed. 😂",
+
+            "I promise to support your dreams, even the crazy ones. 🚀",
+
+            "I promise to listen to you, really listen. 👂",
+
+            "I promise to share my food... mostly. 🍟",
+
+            "I promise to be your peace in a chaotic world. 🕊️",
+
+            "I promise to love you on your bad days too. ❤️"
+
+        ];
+
+
+
+        const colors = ['#ffeaa7', '#fab1a0', '#81ecec', '#a29bfe', '#ff7675'];
+
+       
+
+        const textArea = document.getElementById('text-area');
+
+        const heartBtn = document.getElementById('heart-btn');
+
+        const meter = document.getElementById('meter');
+
+        const faceGroup = document.getElementById('face-group');
+
+        const modal = document.getElementById('final-modal');
+
+
+
+        let clickCount = 0;
+
+        let progress = 0;
+
+        let isTyping = false;
+
+
+
+        heartBtn.addEventListener('touchstart', function(e) {
+
+            e.preventDefault();
+
+            handleInteraction(e.touches[0].clientX, e.touches[0].clientY);
+
+        }, { passive: false });
+
+
+
+        heartBtn.addEventListener('click', function(e) {
+
+            handleInteraction(e.clientX, e.clientY);
+
+        });
+
+
+
+        function handleInteraction(x, y) {
+
+            if (isTyping || progress >= 100) return;
+
+            clickCount++;
+
+            progress += 17;
+
+            if (progress > 100) progress = 100;
+
+            meter.style.width = `${progress}%`;
+
+            heartBtn.style.animation = 'none';
+
+            heartBtn.offsetHeight;
+
+            heartBtn.style.animation = 'shake 0.4s ease';
+
+            createParticles(x, y);
+
+            document.body.style.background = `linear-gradient(135deg, #fff 0%, ${colors[clickCount % colors.length]} 100%)`;
+
+            changeFace(true);
+
+            setTimeout(() => changeFace(false), 500);
+
+
+
+            if (progress >= 100) {
+
+                textArea.innerHTML = "FULL LOVE! ❤️";
+
+                setTimeout(() => {
+
+                    modal.classList.add('open');
+
+                    fireConfetti();
+
+                }, 800);
+
+            } else {
+
+                const text = promises[clickCount % promises.length];
+
+                typeWriter(text);
+
+            }
+
+        }
+
+
+
+        function typeWriter(text) {
+
+            isTyping = true;
+
+            textArea.innerHTML = "";
+
+            let i = 0;
+
+            const speed = 40;
+
+            function type() {
+
+                if (i < text.length) {
+
+                    textArea.innerHTML += text.charAt(i);
+
+                    i++;
+
+                    setTimeout(type, speed);
+
+                } else {
+
+                    isTyping = false;
+
+                }
+
+            }
+
+            type();
+
+        }
+
+
+
+        function changeFace(isWink) {
+
+            if(isWink) {
+
+                faceGroup.innerHTML = `
+
+                    <path d="M62 85 L78 85" stroke="white" stroke-width="5" stroke-linecap="round"/>
+
+                    <circle cx="130" cy="85" r="8" fill="white"/>
+
+                    <circle cx="100" cy="120" r="10" fill="white"/>
+
+                `;
+
+            } else {
+
+                faceGroup.innerHTML = `
+
+                    <circle cx="70" cy="85" r="8" fill="white"/>
+
+                    <circle cx="130" cy="85" r="8" fill="white"/>
+
+                    <path d="M85 115 Q100 130 115 115" stroke="white" stroke-width="5" fill="none" stroke-linecap="round"/>
+
+                `;
+
+            }
+
+        }
+
+
+
+        function createParticles(x, y) {
+
+            const emojis = ['💖', '✨', '🌸', '💋', '🥰'];
+
+            for (let i = 0; i < 6; i++) {
+
+                const p = document.createElement('div');
+
+                p.classList.add('particle');
+
+                p.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+
+                const angle = Math.random() * Math.PI * 2;
+
+                const velocity = Math.random() * 50 + 20;
+
+                const tx = Math.cos(angle) * velocity;
+
+                const ty = Math.sin(angle) * velocity;
+
+                p.style.left = x + 'px';
+
+                p.style.top = y + 'px';
+
+                p.style.transform = `translate(${tx}px, ${ty}px)`;
+
+                document.body.appendChild(p);
+
+                setTimeout(() => p.remove(), 1500);
+
+            }
+
+        }
+
+       
+
+        function fireConfetti() {
+
+            const interval = setInterval(() => {
+
+                const x = Math.random() * window.innerWidth;
+
+                const y = Math.random() * window.innerHeight;
+
+                createParticles(x, y);
+
+            }, 100);
+
+            setTimeout(() => clearInterval(interval), 3000);
+
+        }
+
+    </script>
+
+</body>
+
+</html>
